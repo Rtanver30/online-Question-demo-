@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<style>
+    body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.quiz-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #e9ecef;
+}
+
+#quiz {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 80%;
+  max-width: 600px;
+}
+
+.question {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 10px 0;
+
+ 
+}
+
+.answer {
+  display: none; /* Hide the default radio buttons */
+}
+
+label {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+
+label:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid #007bff; /* Border color */
+  border-radius: 50%;
+}
+
+input[type="radio"]:checked + label:before {
+  background-color: #007bff; /* Background color when checked */
+}
+
+.button {
+  text-align: center;
+  margin-top: 20px;
+}
+
+button#submit {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button#submit:hover {
+  background-color: #0056b3;
+}
+
+</style>
+<body>
+    <div class="quiz-section">
+        <div id="quiz">
+            <h2 class="question" id="question">Quiz question</h2>
+            <div class="score"></div>
+            <hr/>
+            <ul>
+                <li>
+                    <input type="radio" name="answer" class="answer" id="a1">
+                    <label for="a1" id="option_1">quiz option 1</label>
+                </li>
+                <li>
+                    <input type="radio" name="answer" class="answer" id="a2">
+                    <label for="a2" id="option_2">quiz option 2</label>
+                </li>
+                <li>
+                    <input type="radio" name="answer" class="answer" id="a3">
+                    <label for="a3" id="option_3">quiz option 3</label>
+                </li>
+                <li>
+                    <input type="radio" name="answer" class="answer" id="a4">
+                    <label for="a4" id="option_4">quiz option 4</label>
+                </li>
+                
+            </ul>
+            <hr/>
+            <div class="button">
+                <button type="submit" id="submit">Submit</button>    
+            </div>
+        </div>
+    </div>
+    <script >// javascript file
+        const quizData = [
+          {
+            question: "What is your name?",
+            Options: [
+              "Rohit",
+              "Vivek",
+              "Anurag",
+              "Preetam"
+            ],
+            correct: 1,
+          },
+          {
+            question: "What is your NSTI name ?",
+            Options: [
+              "Ramanhtapur Institute of Technology",
+              "noida Institute of Technology",
+              "vidanagar Institute of Technology",
+              "patna Institute of Technology"
+            ],
+            correct: 0,
+          },
+          {
+            question: "What is your NSTI name ?",
+            Options: [
+              "Ramanhtapur Institute of Technology",
+              "noida Institute of Technology",
+              "vidanagar Institute of Technology",
+              "patna Institute of Technology"
+            ],
+            correct: 2,
+          },
+        ];
+        
+        //setp 2: javaScript initialization
+        const quiz = document.querySelector("#quiz");
+        const scores = document.querySelector(".score");
+        
+        const answerElm = document.querySelectorAll(".answer");
+        const [questionElm, option_1, option_2, option_3, option_4] =
+          document.querySelectorAll(
+            "#question, .option_1, .option_2, .option_3, .option_4"
+          );
+        const submitBtn = document.querySelector("#submit");
+        
+        let currentQuiz = 0;
+        let score = 0;
+        
+        
+        //step 3: javaScript function
+        
+        const loadQuiz = () => {
+          const { question, Options } = quizData[currentQuiz];
+          console.log(Options);
+        
+          questionElm.innerHTML = `${currentQuiz + 1} : ${question}`;
+          // Options.forEach((curOption, index) => (option_1.innerHTML=curOption));
+          Options.forEach(
+            (curOption, index) => window[`option_${index + 1}`].innerHTML = curOption);
+            scores.innerHTML = `Score : ${score}/${quizData.length}`;
+        };
+        
+        loadQuiz();
+        
+        // step 4 get selected Answer function n button click 
+        
+        const getselectedOption = () => {
+          // let ans_index;
+          // answerElm.forEach((curOption, index) => {
+          //   if(curOption.checked){ans_index = index;}
+          // });
+          // return ans_index;
+          let answerElement = Array.from(answerElm);
+          return answerElement.findIndex((curElem) => curElem.checked);
+        
+        };
+        
+        //deselect answer
+        const deselectedAnswer = () => {
+          answerElm.forEach((curOption) => (curOption.checked = false));
+        }
+        
+        submitBtn.addEventListener('click', () => {
+          const selectedOptionIndex = getselectedOption();
+          console.log(selectedOptionIndex);
+        
+        
+          if (selectedOptionIndex === quizData[currentQuiz].correct) {
+            score = score + 1;
+          }
+          currentQuiz++;
+        
+          if (currentQuiz < quizData.length) {
+            deselectedAnswer();
+            loadQuiz();
+          } else {
+            quiz.innerHTML = `
+            <div class ="result"><h2>You answered correctly at ${score}/${quizData.length} questions</h2>
+            <button class="reload-button" onclick="location.reload()">Reload</button></div>`
+          }
+        });</script>
+</body>
+</html>
